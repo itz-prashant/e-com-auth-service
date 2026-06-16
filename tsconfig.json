@@ -7,9 +7,11 @@
 
         // Environment Settings
         // See also https://aka.ms/tsconfig/module
-        "module": "NodeNext",
-        "target": "esnext",
-        "types": [],
+        "module": "CommonJS",
+        "target": "ES2022",
+        "types": ["node"],
+        "moduleResolution": "node",
+
         // For nodejs:
         // "lib": ["esnext"],
         // "types": ["node"],
@@ -24,6 +26,7 @@
         "noUncheckedIndexedAccess": true,
         "exactOptionalPropertyTypes": true,
         "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
 
         // Style Options
         // "noImplicitReturns": true,
@@ -36,7 +39,7 @@
         // Recommended Options
         "strict": true,
         "jsx": "react-jsx",
-        "verbatimModuleSyntax": true,
+        "verbatimModuleSyntax": false,
         "isolatedModules": true,
         "noUncheckedSideEffectImports": true,
         "moduleDetection": "force",
