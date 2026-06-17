@@ -6,7 +6,12 @@ import { defineConfig } from "eslint/config";
 
 export default defineConfig(
     {
-        ignores: ["dist/**", "node_modules/**", "eslint.config.mjs"],
+        ignores: [
+            "dist/**",
+            "node_modules/**",
+            "eslint.config.mjs",
+            "jest.config.ts",
+        ],
     },
 
     js.configs.recommended,
@@ -25,6 +30,7 @@ export default defineConfig(
 
         rules: {
             "no-console": "off",
+            "@typescript-eslint/no-misused-promise": "off",
         },
     },
 );

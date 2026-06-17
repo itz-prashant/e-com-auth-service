@@ -27,6 +27,7 @@
         "exactOptionalPropertyTypes": true,
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
 
         // Style Options
         // "noImplicitReturns": true,
