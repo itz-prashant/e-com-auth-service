@@ -11,6 +11,7 @@ const config: Config = {
     collectCoverage: true,
     coverageDirectory: "coverage",
     clearMocks: true,
+    verbose: true,
 };
 
 export default config;
