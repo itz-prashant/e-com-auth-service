@@ -96,5 +96,25 @@ describe("POST /auth/register", () => {
         });
     });
 
+    it("should return an id of created user", async () => {
+        const userData = {
+            firstName: "Prashant",
+            lastName: "Gupta",
+            email: "prashant@gmail.com",
+            password: "123456789",
+        };
+
+        const response = await request(app)
+            .post("/auth/register")
+            .send(userData);
+
+        expect(response.body).toHaveProperty("id");
+
+        const userRepository = connection.getRepository(User);
+        const user = await userRepository.find();
+
+        expect((response.body as Record<string, string>).id).toBe(user[0]?.id);
+    });
+
     describe("Fields are missing", () => {});
 });
