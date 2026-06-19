@@ -28,6 +28,7 @@
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
+        "strictPropertyInitialization": false,
 
         // Style Options
         // "noImplicitReturns": true,
