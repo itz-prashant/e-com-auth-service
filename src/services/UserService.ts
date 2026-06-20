@@ -11,6 +11,15 @@ export class UserService {
     }
 
     async create({ firstName, lastName, email, password }: UserData) {
+        const user = await this.userRepository.findOne({
+            where: { email: email },
+        });
+
+        if (user) {
+            const error = createHttpError(400, "Email is already exist");
+            throw error;
+        }
+
         const saltRound = 10;
         const hashedPassword = await bcrypt.hash(password, saltRound);
         try {
