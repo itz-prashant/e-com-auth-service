@@ -7,6 +7,7 @@ import { Logger } from "winston";
 import { validationResult } from "express-validator";
 import { JwtPayload, sign } from "jsonwebtoken";
 import createHttpError from "http-errors";
+import { CONFIG } from "../config";
 export class AuthController {
     constructor(
         private userService: UserService,
@@ -65,7 +66,15 @@ export class AuthController {
                 issuer: "auth-service",
             });
 
-            const refreshToken = "dnuu329hdjan";
+            const refreshToken = sign(
+                payload,
+                CONFIG.REFRESH_TOKEN_SECRET as string,
+                {
+                    algorithm: "HS256",
+                    expiresIn: "1yr",
+                    issuer: "auth-service",
+                },
+            );
 
             res.cookie("accessToken", accessToken, {
                 domain: "localhost",
@@ -77,7 +86,7 @@ export class AuthController {
             res.cookie("refreshToken", refreshToken, {
                 domain: "localhost",
                 sameSite: "strict",
-                maxAge: 1000 * 60 * 60 * 24 * 365, // 1h
+                maxAge: 1000 * 60 * 60 * 24 * 365, // 1yr
                 httpOnly: true, // very important
             });
 
