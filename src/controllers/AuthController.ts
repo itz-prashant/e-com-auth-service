@@ -8,6 +8,8 @@ import { validationResult } from "express-validator";
 import { JwtPayload, sign } from "jsonwebtoken";
 import createHttpError from "http-errors";
 import { CONFIG } from "../config";
+import { AppDataSource } from "../config/data-source";
+import { RefreshToken } from "../entities/RefreshToken";
 export class AuthController {
     constructor(
         private userService: UserService,
@@ -66,6 +68,15 @@ export class AuthController {
                 issuer: "auth-service",
             });
 
+            // persist the refrsh token
+            const MS_IN_YEAR = 1000 * 60 * 60 * 24 * 365;
+            const refreshTokenRepo = AppDataSource.getRepository(RefreshToken);
+
+            const newRefreshToken = await refreshTokenRepo.save({
+                user: user,
+                expiresAt: new Date(Date.now() + MS_IN_YEAR),
+            });
+
             const refreshToken = sign(
                 payload,
                 CONFIG.REFRESH_TOKEN_SECRET as string,
@@ -73,6 +84,7 @@ export class AuthController {
                     algorithm: "HS256",
                     expiresIn: "1yr",
                     issuer: "auth-service",
+                    jwtid: String(newRefreshToken.id),
                 },
             );
 
