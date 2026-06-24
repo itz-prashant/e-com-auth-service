@@ -28,28 +28,38 @@ describe("POST /auth/login", () => {
     });
 
     describe("Given all fields", () => {
-        it("should return 201 status code", async () => {
+        it("should return 200 status code", async () => {
             const userData = {
-                email: "prashant@gnail.com",
-                password: "123456789",
-            };
-
-            const response = await request(app)
-                .post("/auth/login")
-                .send(userData);
-
-            expect(response.statusCode).toBe(201);
-        });
-
-        it("should return valid json format", async () => {
-            const userData = {
+                firstName: "Prashant",
+                lastName: "Gupta",
                 email: "prashant@gmail.com",
                 password: "123456789",
             };
 
-            const response = await request(app)
-                .post("/auth/login")
-                .send(userData);
+            await request(app).post("/auth/register").send(userData);
+
+            const response = await request(app).post("/auth/login").send({
+                email: userData.email,
+                password: userData.password,
+            });
+
+            expect(response.statusCode).toBe(200);
+        });
+
+        it("should return valid json format", async () => {
+            const userData = {
+                firstName: "Prashant",
+                lastName: "Gupta",
+                email: "prashant@gmail.com",
+                password: "123456789",
+            };
+
+            await request(app).post("/auth/register").send(userData);
+
+            const response = await request(app).post("/auth/login").send({
+                email: userData.email,
+                password: userData.password,
+            });
 
             expect(response.headers["content-type"]).toEqual(
                 expect.stringContaining("json"),
