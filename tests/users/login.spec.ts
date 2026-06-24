@@ -11,6 +11,9 @@ import { AppDataSource } from "../../src/config/data-source";
 import request from "supertest";
 import app from "../../src/app";
 import { User } from "../../src/entities/User";
+import bcrypt from "bcrypt";
+import { Roles } from "../../src/contsants";
+import { isJwt } from "../utils/utils";
 
 describe("POST /auth/login", () => {
     let connection: DataSource;
@@ -114,6 +117,55 @@ describe("POST /auth/login", () => {
             });
 
             expect(response.statusCode).toBe(400);
+        });
+
+        it("should return the access token and refresh token inside a cookie", async () => {
+            const userData = {
+                firstName: "Prashant",
+                lastName: "Gupta",
+                email: "prashant@gmail.com",
+                password: "123456789",
+            };
+
+            const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+            const userRepository = connection.getRepository(User);
+
+            await userRepository.save({
+                ...userData,
+                password: hashedPassword,
+                role: Roles.CUSTOMER,
+            });
+
+            const response = await request(app).post("/auth/login").send({
+                email: userData.email,
+                password: userData.password,
+            });
+
+            interface Headers {
+                ["set-cookie"]: string[];
+            }
+
+            let accessToken = null;
+            let refreshToken = null;
+            const cookies =
+                (response.headers as unknown as Headers)["set-cookie"] || [];
+
+            cookies.forEach((cookie) => {
+                if (cookie.startsWith("accessToken=")) {
+                    accessToken = cookie.split(";")[0]?.split("=")[1];
+                }
+
+                if (cookie.startsWith("refreshToken=")) {
+                    refreshToken = cookie.split(";")[0]?.split("=")[1];
+                }
+            });
+
+            expect(accessToken).not.toBeNull();
+            expect(refreshToken).not.toBeNull();
+
+            expect(isJwt(accessToken)).toBeTruthy();
+            expect(isJwt(refreshToken)).toBeTruthy();
         });
     });
 });
