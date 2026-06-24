@@ -67,7 +67,7 @@ describe("POST /auth/login", () => {
             );
         });
 
-        it("should return an id of logged in user", async () => {
+        it("should checked exist in database", async () => {
             const userData = {
                 firstName: "Prashant",
                 lastName: "Gupta",
@@ -90,6 +90,30 @@ describe("POST /auth/login", () => {
             expect(user).not.toBeNull();
             expect(response.body).toHaveProperty("id");
             expect(response.body.id).toBe(user?.id);
+        });
+
+        it("should return 400 if password is wrong", async () => {
+            const userData = {
+                firstName: "Prashant",
+                lastName: "Gupta",
+                email: "prashant@gmail.com",
+                password: "123456789",
+            };
+
+            await request(app).post("/auth/register").send(userData);
+
+            const response = await request(app).post("/auth/login").send({
+                email: userData.email,
+                password: "9876543210",
+            });
+
+            const userRepository = connection.getRepository(User);
+
+            const user = await userRepository.findOne({
+                where: { email: userData.email },
+            });
+
+            expect(response.statusCode).toBe(400);
         });
     });
 });
