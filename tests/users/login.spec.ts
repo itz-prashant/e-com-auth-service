@@ -10,6 +10,7 @@ import { DataSource } from "typeorm";
 import { AppDataSource } from "../../src/config/data-source";
 import request from "supertest";
 import app from "../../src/app";
+import { User } from "../../src/entities/User";
 
 describe("POST /auth/login", () => {
     let connection: DataSource;
@@ -64,6 +65,31 @@ describe("POST /auth/login", () => {
             expect(response.headers["content-type"]).toEqual(
                 expect.stringContaining("json"),
             );
+        });
+
+        it("should return an id of logged in user", async () => {
+            const userData = {
+                firstName: "Prashant",
+                lastName: "Gupta",
+                email: "prashant@gmail.com",
+                password: "123456789",
+            };
+
+            await request(app).post("/auth/register").send(userData);
+
+            const response = await request(app).post("/auth/login").send({
+                email: userData.email,
+                password: userData.password,
+            });
+
+            const userRepository = connection.getRepository(User);
+
+            const user = await userRepository.findOne({
+                where: { email: userData.email },
+            });
+            expect(user).not.toBeNull();
+            expect(response.body).toHaveProperty("id");
+            expect(response.body.id).toBe(user?.id);
         });
     });
 });
