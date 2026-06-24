@@ -40,5 +40,20 @@ describe("POST /auth/login", () => {
 
             expect(response.statusCode).toBe(201);
         });
+
+        it("should return valid json format", async () => {
+            const userData = {
+                email: "prashant@gmail.com",
+                password: "123456789",
+            };
+
+            const response = await request(app)
+                .post("/auth/login")
+                .send(userData);
+
+            expect(response.headers["content-type"]).toEqual(
+                expect.stringContaining("json"),
+            );
+        });
     });
 });

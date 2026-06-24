@@ -76,6 +76,6 @@ export class AuthController {
     }
 
     login(req: Request, res: Response) {
-        res.status(201).send();
+        res.status(201).json({});
     }
 }
