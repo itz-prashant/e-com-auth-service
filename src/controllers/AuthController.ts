@@ -160,4 +160,8 @@ export class AuthController {
             return;
         }
     }
+
+    self(req: RegisterUserRequest, res: Response) {
+        res.json({});
+    }
 }
