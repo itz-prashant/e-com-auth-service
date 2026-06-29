@@ -2,7 +2,8 @@ import "reflect-metadata";
 import express, { NextFunction, Request, Response } from "express";
 import logger from "./config/logger";
 import { HttpError } from "http-errors";
-import Router from "./routes/auth";
+import authRouter from "./routes/auth";
+import tenantRouter from "./routes/tenant";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -14,7 +15,8 @@ app.get("/", (req, res) => {
     res.status(200).send("Welcome to auth servicse");
 });
 
-app.use("/auth", Router);
+app.use("/auth", authRouter);
+app.use("/tenants", tenantRouter);
 
 // Global error handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
