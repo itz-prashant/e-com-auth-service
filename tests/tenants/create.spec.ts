@@ -1,9 +1,16 @@
-import { afterAll, beforeAll, describe, expect, it } from "@jest/globals";
+import {
+    afterAll,
+    beforeAll,
+    beforeEach,
+    describe,
+    expect,
+    it,
+} from "@jest/globals";
 import { DataSource } from "typeorm";
 import { AppDataSource } from "../../src/config/data-source";
-import { beforeEach } from "node:test";
 import request from "supertest";
 import app from "../../src/app";
+import { Tenant } from "../../src/entities/Tenant";
 
 describe("POST /tenants", () => {
     let connection: DataSource;
@@ -33,6 +40,22 @@ describe("POST /tenants", () => {
                 .send(tenantData);
 
             expect(response.statusCode).toBe(201);
+        });
+
+        it("should create a tenant in database", async () => {
+            const tenantData = {
+                name: "Tenant name",
+                address: "Tenant address",
+            };
+
+            await request(app).post("/tenants").send(tenantData);
+
+            const tenantRepo = connection.getRepository(Tenant);
+
+            const tenants = await tenantRepo.find();
+
+            expect(tenants).toHaveLength(1);
+            expect(tenants[0]?.name).toBe(tenantData.name);
         });
     });
 });
