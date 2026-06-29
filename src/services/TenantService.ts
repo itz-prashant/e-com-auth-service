@@ -18,4 +18,8 @@ export class TenantService {
             where: { id: tenantId },
         });
     }
+
+    async update(id: number, tenantData: ITenant) {
+        return await this.tenantRepository.update(id, tenantData);
+    }
 }
