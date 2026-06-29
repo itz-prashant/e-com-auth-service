@@ -44,15 +44,15 @@ export class TenantController {
             return;
         }
         try {
-            const tenants = await this.tenantService.getById(Number(tenantId));
+            const tenant = await this.tenantService.getById(Number(tenantId));
 
-            if (!tenants) {
+            if (!tenant) {
                 next(createHttpError(400, "Tenant id does not exits."));
                 return;
             }
 
-            this.logger.info("All tenant have been fetched");
-            res.json(tenants);
+            this.logger.info("Tenant have been fetched");
+            res.json(tenant);
         } catch (error) {
             next(error);
         }
@@ -76,6 +76,25 @@ export class TenantController {
             });
             this.logger.info("Tenant has been updated", { id: tenantId });
             res.json({ id: Number(tenantId) });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async delete(req: Request, res: Response, next: NextFunction) {
+        const tenantId = req.params.id;
+
+        if (isNaN(Number(tenantId))) {
+            next(createHttpError(400, "Invalid url param."));
+            return;
+        }
+
+        try {
+            const tenant = await this.tenantService.deleteById(
+                Number(tenantId),
+            );
+            this.logger.info("Tenant have been deleted");
+            res.json(tenant);
         } catch (error) {
             next(error);
         }
