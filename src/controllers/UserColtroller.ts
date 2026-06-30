@@ -1,21 +1,22 @@
 import { NextFunction, Response, Request } from "express";
 import { UserService } from "../services/UserService";
 import { CreateUserRequest } from "../types";
-import { Roles } from "../contsants";
 import createHttpError from "http-errors";
 
 export class UserController {
     constructor(private userSerevice: UserService) {}
 
     async create(req: CreateUserRequest, res: Response, next: NextFunction) {
-        const { firstName, lastName, email, password } = req.body;
+        const { firstName, lastName, email, password, tenantId, role } =
+            req.body;
         try {
             const user = await this.userSerevice.create({
                 firstName,
                 lastName,
                 email,
                 password,
-                role: Roles.MANAGER,
+                role,
+                tenantId,
             });
             res.status(201).json({ id: user.id });
         } catch (error) {

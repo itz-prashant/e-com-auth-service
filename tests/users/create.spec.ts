@@ -14,6 +14,8 @@ import app from "../../src/app";
 import createJWKSmock from "mock-jwks";
 import { User } from "../../src/entities/User";
 import { Roles } from "../../src/contsants";
+import { createTenant } from "../utils/utils";
+import { Tenant } from "../../src/entities/Tenant";
 
 describe("POST /auth/users", () => {
     let connection: DataSource;
@@ -40,13 +42,16 @@ describe("POST /auth/users", () => {
 
     describe("Given all fields", () => {
         it("should persist the user in database", async () => {
+            const tenant = await createTenant(connection.getRepository(Tenant));
             const userData = {
                 firstName: "Prashant",
                 lastName: "Gupta",
                 email: "prashant@gmail.com",
                 password: "123456789",
-                tenantId: 1,
+                tenantId: tenant.id,
+                role: Roles.MANAGER,
             };
+
             const accessToken = jwks.token({
                 sub: "1",
                 role: Roles.ADMIN,
@@ -65,12 +70,15 @@ describe("POST /auth/users", () => {
         });
 
         it("should create a manager user", async () => {
+            const tenant = await createTenant(connection.getRepository(Tenant));
+
             const userData = {
                 firstName: "Prashant",
                 lastName: "Gupta",
                 email: "prashant@gmail.com",
                 password: "123456789",
-                tenantId: 1,
+                tenantId: tenant.id,
+                role: Roles.MANAGER,
             };
             const accessToken = jwks.token({
                 sub: "1",
