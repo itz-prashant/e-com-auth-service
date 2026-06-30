@@ -29,4 +29,11 @@ router.patch("/:id", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
     userController.update(req, res, next),
 );
 
+router.delete(
+    "/:id",
+    authenticate,
+    canAccess([Roles.ADMIN]),
+    (req, res, next) => userController.delete(req, res, next),
+);
+
 export default router;
