@@ -25,4 +25,8 @@ router.get("/:id", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
     userController.getOne(req, res, next),
 );
 
+router.patch("/:id", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
+    userController.update(req, res, next),
+);
+
 export default router;

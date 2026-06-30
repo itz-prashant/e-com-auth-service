@@ -48,4 +48,25 @@ export class UserController {
             next(error);
         }
     }
+
+    async update(req: CreateUserRequest, res: Response, next: NextFunction) {
+        const userId = req.params.id;
+        const { firstName, lastName, role } = req.body;
+
+        if (isNaN(Number(userId))) {
+            next(createHttpError(400, "Invalid url param."));
+            return;
+        }
+
+        try {
+            await this.userSerevice.update(Number(userId), {
+                firstName,
+                lastName,
+                role,
+            });
+            res.json({ id: userId });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
