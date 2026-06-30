@@ -2,6 +2,7 @@ import { NextFunction, Response, Request } from "express";
 import { UserService } from "../services/UserService";
 import { CreateUserRequest } from "../types";
 import { Roles } from "../contsants";
+import createHttpError from "http-errors";
 
 export class UserController {
     constructor(private userSerevice: UserService) {}
@@ -27,6 +28,22 @@ export class UserController {
             const users = await this.userSerevice.getAll();
 
             res.json(users);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getOne(req: Request, res: Response, next: NextFunction) {
+        const userId = req.params.id;
+
+        if (isNaN(Number(userId))) {
+            next(createHttpError(400, "Invalid url param."));
+            return;
+        }
+
+        try {
+            const user = await this.userSerevice.findById(Number(userId));
+            res.json(user);
         } catch (error) {
             next(error);
         }
