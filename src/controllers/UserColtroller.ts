@@ -18,7 +18,7 @@ export class UserController {
                 role,
                 tenantId,
             });
-             
+
             res.status(201).json({ id: user.id });
         } catch (error) {
             next(error);
