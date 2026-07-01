@@ -12,6 +12,8 @@ const config: Config = {
     coverageDirectory: "coverage",
     clearMocks: true,
     verbose: true,
+    coverageProvider: "v8",
+    collectCoverageFrom: ["src/**/*.ts", "tests/**", "!**/node_modules/**"],
 };
 
 export default config;
