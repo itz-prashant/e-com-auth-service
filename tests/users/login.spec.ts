@@ -11,7 +11,7 @@ import { AppDataSource } from "../../src/config/data-source";
 import request from "supertest";
 import app from "../../src/app";
 import { User } from "../../src/entities/User";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Roles } from "../../src/contsants";
 import { isJwt } from "../utils/utils";
 
