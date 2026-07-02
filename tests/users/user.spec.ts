@@ -82,55 +82,55 @@ describe("GET /auth/self", () => {
 
             expect(response.body.id).toBe(data.id);
         });
-    });
 
-    it("should not return password", async () => {
-        const userData = {
-            firstName: "Prashant",
-            lastName: "Gupta",
-            email: "prashant@gmail.com",
-            password: "123456789",
-        };
+        it("should not return password", async () => {
+            const userData = {
+                firstName: "Prashant",
+                lastName: "Gupta",
+                email: "prashant@gmail.com",
+                password: "123456789",
+            };
 
-        const userRepository = connection.getRepository(User);
+            const userRepository = connection.getRepository(User);
 
-        const data = await userRepository.save({
-            ...userData,
-            role: Roles.CUSTOMER,
+            const data = await userRepository.save({
+                ...userData,
+                role: Roles.CUSTOMER,
+            });
+
+            //Generate token
+
+            const accessToken = jwks.token({
+                sub: String(data.id),
+                role: data.role,
+            });
+
+            const response = await request(app)
+                .get("/auth/self")
+                .set("Cookie", [`accessToken=${accessToken}`])
+                .send();
+
+            expect(response.body).not.toHaveProperty("password");
         });
 
-        //Generate token
+        it("should return 401 status code if token not exist", async () => {
+            const userData = {
+                firstName: "Prashant",
+                lastName: "Gupta",
+                email: "prashant@gmail.com",
+                password: "123456789",
+            };
 
-        const accessToken = jwks.token({
-            sub: String(data.id),
-            role: data.role,
+            const userRepository = connection.getRepository(User);
+
+            await userRepository.save({
+                ...userData,
+                role: Roles.CUSTOMER,
+            });
+
+            const response = await request(app).get("/auth/self").send();
+
+            expect(response.statusCode).toBe(401);
         });
-
-        const response = await request(app)
-            .get("/auth/self")
-            .set("Cookie", [`accessToken=${accessToken}`])
-            .send();
-
-        expect(response.body).not.toHaveProperty("password");
-    });
-
-    it("should return 401 status code if token not exist", async () => {
-        const userData = {
-            firstName: "Prashant",
-            lastName: "Gupta",
-            email: "prashant@gmail.com",
-            password: "123456789",
-        };
-
-        const userRepository = connection.getRepository(User);
-
-        await userRepository.save({
-            ...userData,
-            role: Roles.CUSTOMER,
-        });
-
-        const response = await request(app).get("/auth/self").send();
-
-        expect(response.statusCode).toBe(401);
     });
 });
