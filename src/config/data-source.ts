@@ -11,6 +11,9 @@ export const AppDataSource = new DataSource({
     database: CONFIG.DB_NAME!,
     synchronize: false, // don't use this in production , Always keep false
     logging: false,
+    ssl: {
+        rejectUnauthorized: false,
+    },
     entities: ["src/entities/*.{ts,js}"],
     migrations: ["src/migration/*.ts"],
     subscribers: [],
