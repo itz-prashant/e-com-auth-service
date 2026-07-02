@@ -33,7 +33,6 @@
         "@types/supertest": "^7.2.0",
         "@types/winston": "^2.4.4",
         "cross-env": "^10.1.0",
-        "dotenv": "^17.4.2",
         "eslint": "^10.5.0",
         "husky": "^9.1.7",
         "jest": "^30.4.2",
@@ -56,6 +55,7 @@
     "dependencies": {
         "bcryptjs": "^3.0.3",
         "cookie-parser": "^1.4.7",
+        "dotenv": "^17.4.2",
         "express": "^5.2.1",
         "express-jwt": "^8.4.1",
         "express-validator": "^7.3.2",
