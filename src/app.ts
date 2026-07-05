@@ -6,8 +6,18 @@ import authRouter from "./routes/auth";
 import tenantRouter from "./routes/tenant";
 import userRouter from "./routes/user";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import { CONFIG } from "./config";
 
 const app = express();
+
+app.use(
+    cors({
+        origin: [CONFIG.ADMIN_DASHBOARD_BASE_URL!],
+        credentials: true,
+    }),
+);
+
 app.use(express.static("public", { dotfiles: "allow" }));
 app.use(cookieParser());
 app.use(express.json());
