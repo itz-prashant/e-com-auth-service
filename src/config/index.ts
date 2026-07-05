@@ -16,6 +16,7 @@ const {
     REFRESH_TOKEN_SECRET,
     JWKS_URI,
     PRIVATE_KEY,
+    ADMIN_DASHBOARD_BASE_URL,
 } = process.env;
 
 export const CONFIG = {
@@ -29,4 +30,5 @@ export const CONFIG = {
     REFRESH_TOKEN_SECRET,
     JWKS_URI,
     PRIVATE_KEY,
+    ADMIN_DASHBOARD_BASE_URL,
 };
