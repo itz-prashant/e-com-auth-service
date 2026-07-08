@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Brackets, Repository } from "typeorm";
 import { User } from "../entities/User";
 import { LimitedUserData, UserData, UserQueryParams } from "../types";
 import createHttpError from "http-errors";
@@ -64,10 +64,25 @@ export class UserService {
 
     async getAll(validatedQuery: UserQueryParams) {
         const queryBuilder = this.userRepository.createQueryBuilder();
-
+        if (validatedQuery.q) {
+            const searchTerm = `%${validatedQuery.q}%`;
+            queryBuilder.where(
+                new Brackets((qb) => {
+                    qb.where("CONCAT(firstName, ' ', lastName) ILIKE :q", {
+                        q: searchTerm,
+                    }).orWhere("email ILike :q", { q: searchTerm });
+                }),
+            );
+        }
+        if (validatedQuery.q) {
+            queryBuilder.andWhere("role = :role", {
+                role: validatedQuery.role,
+            });
+        }
         const result = await queryBuilder
             .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
             .take(validatedQuery.perPage)
+            .orderBy("id", "DESC")
             .getManyAndCount();
         return result;
     }
