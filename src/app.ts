@@ -1,13 +1,12 @@
 import "reflect-metadata";
-import express, { NextFunction, Request, Response } from "express";
-import logger from "./config/logger";
-import { HttpError } from "http-errors";
+import express from "express";
 import authRouter from "./routes/auth";
 import tenantRouter from "./routes/tenant";
 import userRouter from "./routes/user";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { CONFIG } from "./config";
+import { globalErrorhandler } from "./middlewares/globalErrorHandler";
 
 const app = express();
 
@@ -31,21 +30,6 @@ app.use("/tenants", tenantRouter);
 app.use("/users", userRouter);
 
 // Global error handler
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
-    logger.error(err.message);
-    const statusCode = err.statusCode || err.status || 500;
-
-    res.status(statusCode).json({
-        errors: [
-            {
-                type: err.name,
-                message: err.message,
-                path: "",
-                location: "",
-            },
-        ],
-    });
-});
+app.use(globalErrorhandler);
 
 export default app;
