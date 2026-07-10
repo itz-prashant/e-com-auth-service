@@ -62,7 +62,7 @@ export class UserController {
 
     async update(req: CreateUserRequest, res: Response, next: NextFunction) {
         const userId = req.params.id;
-        const { firstName, lastName, role } = req.body;
+        const { firstName, lastName, role, email, tenantId } = req.body;
 
         if (isNaN(Number(userId))) {
             next(createHttpError(400, "Invalid url param."));
@@ -74,6 +74,8 @@ export class UserController {
                 firstName,
                 lastName,
                 role,
+                email,
+                tenantId,
             });
             res.json({ id: userId });
         } catch (error) {

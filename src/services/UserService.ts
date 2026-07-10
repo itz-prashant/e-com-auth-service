@@ -63,33 +63,47 @@ export class UserService {
     }
 
     async getAll(validatedQuery: UserQueryParams) {
-        const queryBuilder = this.userRepository.createQueryBuilder();
+        const queryBuilder = this.userRepository.createQueryBuilder("user");
         if (validatedQuery.q) {
             const searchTerm = `%${validatedQuery.q}%`;
             queryBuilder.where(
                 new Brackets((qb) => {
-                    qb.where("CONCAT(firstName, ' ', lastName) ILIKE :q", {
-                        q: searchTerm,
-                    }).orWhere("email ILike :q", { q: searchTerm });
+                    qb.where(
+                        "CONCAT(user.firstName, ' ', user.lastName) ILIKE :q",
+                        {
+                            q: searchTerm,
+                        },
+                    ).orWhere("user.email ILike :q", { q: searchTerm });
                 }),
             );
         }
-        if (validatedQuery.q) {
-            queryBuilder.andWhere("role = :role", {
+        if (validatedQuery.role) {
+            queryBuilder.andWhere("user.role = :role", {
                 role: validatedQuery.role,
             });
         }
         const result = await queryBuilder
+            .leftJoinAndSelect("user.tenant", "tenant")
             .skip((validatedQuery.currentPage - 1) * validatedQuery.perPage)
             .take(validatedQuery.perPage)
-            .orderBy("id", "DESC")
+            .orderBy("user.id", "DESC")
             .getManyAndCount();
+
         return result;
     }
 
-    async update(id: number, { firstName, lastName, role }: LimitedUserData) {
+    async update(
+        id: number,
+        { firstName, lastName, role, email, tenantId }: LimitedUserData,
+    ) {
         try {
-            await this.userRepository.update(id, { firstName, lastName, role });
+            await this.userRepository.update(id, {
+                firstName,
+                lastName,
+                role,
+                email,
+                tenant: tenantId ? { id: tenantId } : undefined,
+            });
         } catch {
             const error = createHttpError(
                 500,
