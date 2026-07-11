@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { TenantController } from "../controllers/TenantController";
 import { TenantService } from "../services/TenantService";
 import { AppDataSource } from "../config/data-source";
@@ -7,6 +7,7 @@ import logger from "../config/logger";
 import authenticate from "../middlewares/authenticate";
 import { canAccess } from "../middlewares/canAccess";
 import { Roles } from "../contsants";
+import tenantValidator from "../validators/tenant-validator";
 
 const router = express.Router();
 
@@ -18,7 +19,12 @@ router.post("/", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
     tenantController.create(req, res, next),
 );
 
-router.get("/", (req, res, next) => tenantController.getAll(req, res, next));
+router.get(
+    "/",
+    tenantValidator,
+    (req: Request, res: Response, next: NextFunction) =>
+        tenantController.getAll(req, res, next),
+);
 
 router.get("/:id", authenticate, canAccess([Roles.ADMIN]), (req, res, next) =>
     tenantController.getOne(req, res, next),
