@@ -48,6 +48,9 @@ export class UserService {
             where: {
                 email,
             },
+            relations: {
+                tenant: true,
+            },
         });
     }
 

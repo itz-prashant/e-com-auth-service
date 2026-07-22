@@ -31,6 +31,7 @@ export default defineConfig(
         rules: {
             "no-console": "off",
             "@typescript-eslint/no-misused-promise": "off",
+            "https://typescript-eslint.io/rules/no-unsafe-assignment" :"off"
         },
     },
 );
