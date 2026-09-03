@@ -17,6 +17,7 @@ const {
     JWKS_URI,
     PRIVATE_KEY,
     ADMIN_DASHBOARD_BASE_URL,
+    MAIN_DOMAIN,
 } = process.env;
 
 export const CONFIG = {
@@ -31,4 +32,5 @@ export const CONFIG = {
     JWKS_URI,
     PRIVATE_KEY,
     ADMIN_DASHBOARD_BASE_URL,
+    MAIN_DOMAIN,
 };
