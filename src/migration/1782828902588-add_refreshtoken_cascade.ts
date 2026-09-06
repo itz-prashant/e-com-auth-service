@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class AddRefreshtokenCascade1699475145577 implements MigrationInterface {
+export class AddRefreshtokenCascade1782828902588 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
-            `ALTER TABLE "refreshTokens" DROP CONSTRAINT "FK_265bec4e500714d5269580a0219"`,
+            `ALTER TABLE "refreshTokens" DROP CONSTRAINT IF EXISTS "FK_265bec4e500714d5269580a0219"`,
         );
 
         await queryRunner.query(
@@ -13,7 +13,7 @@ export class AddRefreshtokenCascade1699475145577 implements MigrationInterface {
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
-            `ALTER TABLE "refreshTokens" DROP CONSTRAINT "FK_265bec4e500714d5269580a0219"`,
+            `ALTER TABLE "refreshTokens" DROP CONSTRAINT IF EXISTS "FK_265bec4e500714d5269580a0219"`,
         );
 
         await queryRunner.query(
